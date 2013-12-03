@@ -30,8 +30,22 @@ Game.prototype.processClick = function(id) {
     this.secondClick = parseInt(id);
   }
   if (this.secondClick) {
-    this.swapGems();
+    if (this.adjacent(this.firstClick, this.secondClick)) {
+      this.swapGems();
+    }
+    else {
+      alert("Sorry, that is not a valid move");
+      this.firstClick = "";
+      this.secondClick = "";
+    }
   }
+}
+
+Game.prototype.adjacent = function(tile1, tile2) {
+  if (Math.abs(tile1 - tile2) === 1 || Math.abs(tile1 - tile2) === this.numColumns) {
+    return true;
+  }
+  return false;
 }
 
 Game.prototype.swapGems = function() {
