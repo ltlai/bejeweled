@@ -54,7 +54,18 @@ Game.prototype.resetClicks = function() {
 }
 
 Game.prototype.adjacent = function(tile1, tile2) {
-  if (Math.abs(tile1 - tile2) === 1 || Math.abs(tile1 - tile2) === this.numColumns) {
+  if (tile1 > tile2) {
+    var larger = tile1;
+    var smaller = tile2;
+  }
+  else {
+    var larger = tile2;
+    var smaller = tile1;
+  }
+  if (larger - smaller === this.numColumns) {
+    return true;
+  }
+  else if (larger - smaller === 1 && larger % this.numColumns != 0) {
     return true;
   }
   return false;
