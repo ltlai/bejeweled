@@ -90,7 +90,26 @@ Game.prototype.eliminateChains = function() {
   }
   this.renderBoard();
   var thisGame = this;
-  setTimeout(function() {thisGame.fillBoard();}, 1500);
+  setTimeout(function() {thisGame.dropGems();}, 1500);
+}
+
+Game.prototype.dropGems = function() {
+  for(var i = this.board.length - 1; i > this.numColumns; i--) {
+    if (this.board[i] === "" && this.gemAbove(i)) {
+      this.board[i] = this.gemAbove(i)[0];
+      this.board[this.gemAbove(i)[1]] = ""
+    }
+  }
+  this.renderBoard();
+}
+
+Game.prototype.gemAbove = function(i) {
+  for(var j = i - this.numColumns; j > -1; j -= this.numColumns) {
+    if (this.board[j] != "") {
+      return [this.board[j], j]
+    }
+  }
+  return false;
 }
 
 Array.prototype.contains = function(value) {
