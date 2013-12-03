@@ -108,6 +108,15 @@ Game.prototype.fillBoard = function() {
 Game.prototype.checkForChains = function() {
   var thisGame = this;
   if (this.horizontalChains().length > 0 || this.verticalChains().length > 0) {
+    var horChains = this.horizontalChains();
+    var vertChains = this.verticalChains();
+    for(var i = 0; i < horChains.length; i++) {
+      $('#' + horChains[i].toString()).addClass('chain');
+    }
+    for(var i = 0; i < vertChains.length; i++) {
+      $('#' + vertChains[i].toString()).addClass('chain');
+    }
+    // this.renderBoard();
     setTimeout(function() {thisGame.eliminateChains();}, 1500);
     return true;
   }
@@ -160,9 +169,11 @@ Game.prototype.eliminateChains = function() {
   var horChains = this.horizontalChains();
   var vertChains = this.verticalChains();
   for(var i = 0; i < horChains.length; i++) {
+    $('#' + horChains[i].toString()).removeClass('chain')
     this.board[horChains[i]] = ""
   }
   for(var i = 0; i < vertChains.length; i++) {
+    $('#' + vertChains[i].toString()).removeClass('chain')
     this.board[vertChains[i]] = ""
   }
   this.renderBoard();
