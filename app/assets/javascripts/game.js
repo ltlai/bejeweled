@@ -1,7 +1,14 @@
 $(document).ready(function() {
-  var game = new Game();
+  var game = new Game(4, 4);
+  game.createBlankBoard();
   game.fillBoard();
   game.renderBoard();
+  if (game.verticalChains().length > 0) {
+    console.log(game.verticalChains());
+  }
+  if (game.horizontalChains().length > 0) {
+    console.log(game.horizontalChains());
+  }
 });
 
 var gems = ["X", "O", "V", "#", "&"];
@@ -11,11 +18,16 @@ function randomGem() {
    return gems[n];
 };
 
-function Game() {
-  this.board = ["", "", "", "",
-                "", "", "", "",
-                "", "", "", "",
-                "", "", "", ""]
+function Game(numRows, numColumns) {
+  this.numRows = numRows;
+  this.numColumns = numColumns;
+  this.board =  [];
+};
+
+Game.prototype.createBlankBoard = function() {
+  for(var i = 0; i < (this.numRows * this.numColumns); i++) {
+    this.board.push("");
+  }
 };
 
 Game.prototype.fillBoard = function() {
@@ -32,8 +44,8 @@ Game.prototype.renderBoard = function() {
   }
 };
 
-function lastTwoColumns(i) {
-  if((i + 1) % 4 === 0 || (i + 2) % 4 === 0) {
+Game.prototype.lastTwoColumns = function(i) {
+  if((i + 1) % this.numColumns === 0 || (i + 2) % this.numColumns === 0) {
     return true;
   }
   return false;
@@ -43,7 +55,7 @@ Game.prototype.horizontalChains = function() {
   var horizontalChains = [];
   var potentialChain = [];
   for(var i = 0; i < this.board.length; i++) {
-    if (!lastTwoColumns(i)) {
+    if (!this.lastTwoColumns(i)) {
       potentialChain.push(i, i+1, i+2)
       if(this.board[i] === this.board[i+1] && this.board[i+1] === this.board[i+2]) {
         horizontalChains.push(i, i+1, i+2);
@@ -58,10 +70,11 @@ Game.prototype.verticalChains = function() {
   var verticalChains = [];
   var potentialChain = [];
   for(var i = 0; i < this.board.length; i++) {
-    if (i < 8) {
-      potentialChain.push(i, i+4, i+8)
-      if(this.board[i] === this.board[i+4] && this.board[i+4] === this.board[i+8]) {
-        verticalChains.push(i, i+4, i+8);
+    if (i < 2 * this.numColumns) {
+      potentialChain.push(i, i + this.numColumns, i + 2 * this.numColumns)
+      if(this.board[i] === this.board[i + this.numColumns] && 
+        this.board[i] === this.board[i + 2 * this.numColumns]) {
+        verticalChains.push(i, i + this.numColumns, i + 2 * this.numColumns);
       }
       else {potentialChain = []};
     }
