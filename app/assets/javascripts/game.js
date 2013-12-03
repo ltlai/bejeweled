@@ -86,6 +86,7 @@ Game.prototype.swapGems = function() {
 Game.prototype.finishSwap = function() {
   this.resetClicks();
   this.renderBoard();
+  this.checkForChains();
 }
 
 Game.prototype.createBlankBoard = function() {
@@ -101,6 +102,7 @@ Game.prototype.fillBoard = function() {
     }
   }
   this.renderBoard();
+  this.checkForChains();
 };
 
 Game.prototype.checkForChains = function() {
@@ -116,7 +118,6 @@ Game.prototype.renderBoard = function() {
   for(var i = 0; i < this.board.length; i++) {
     $('#' + i.toString()).text(this.board[i]);
   }
-  this.checkForChains();
 };
 
 Game.prototype.lastTwoColumns = function(i) {
@@ -166,8 +167,8 @@ Game.prototype.eliminateChains = function() {
   }
   this.renderBoard();
   var thisGame = this;
-  setTimeout(function() {thisGame.dropGems();}, 750);
-  setTimeout(function() {thisGame.fillBoard();}, 1500);
+  setTimeout(function() {thisGame.dropGems();}, 500);
+  setTimeout(function() {thisGame.fillBoard();}, 1000);
 }
 
 Game.prototype.dropGems = function() {
