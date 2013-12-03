@@ -32,13 +32,25 @@ Game.prototype.processClick = function(id) {
   if (this.secondClick) {
     if (this.adjacent(this.firstClick, this.secondClick)) {
       this.swapGems();
+      if (this.checkForChains()) {
+        this.finishSwap();
+      }
+      else {
+        this.swapGems();
+        this.resetClicks();
+        alert("Sorry, that move does not create any chains");
+      }
     }
     else {
-      alert("Sorry, that is not a valid move");
-      this.firstClick = "";
-      this.secondClick = "";
+      this.resetClicks();
+      alert("Sorry, only adjacent gems may be swapped");
     }
   }
+}
+
+Game.prototype.resetClicks = function() {
+  this.firstClick = "";
+  this.secondClick = "";
 }
 
 Game.prototype.adjacent = function(tile1, tile2) {
@@ -53,10 +65,11 @@ Game.prototype.swapGems = function() {
   var secondGem = this.board[this.secondClick];
   this.board[this.firstClick] = secondGem;
   this.board[this.secondClick] = firstGem;
-  this.firstClick = "";
-  this.secondClick = "";
+}
+
+Game.prototype.finishSwap = function() {
+  this.resetClicks();
   this.renderBoard();
-  this.checkForChains();
 }
 
 Game.prototype.createBlankBoard = function() {
@@ -72,20 +85,22 @@ Game.prototype.fillBoard = function() {
     }
   }
   this.renderBoard();
-  this.checkForChains();
 };
 
 Game.prototype.checkForChains = function() {
   var thisGame = this;
   if (this.horizontalChains().length > 0 || this.verticalChains().length > 0) {
     setTimeout(function() {thisGame.eliminateChains();}, 1500);
+    return true;
   }
+  return false;
 }
 
 Game.prototype.renderBoard = function() {
   for(var i = 0; i < this.board.length; i++) {
     $('#' + i.toString()).text(this.board[i]);
   }
+  this.checkForChains();
 };
 
 Game.prototype.lastTwoColumns = function(i) {
