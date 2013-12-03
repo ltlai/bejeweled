@@ -36,8 +36,9 @@ Game.prototype.processClick = function(id) {
     this.board[this.secondClick] = firstGem;
     this.firstClick = "";
     this.secondClick = "";
+    this.renderBoard();
+    this.checkForChains();
   }
-  this.renderBoard();
 }
 
 Game.prototype.createBlankBoard = function() {
@@ -94,15 +95,13 @@ Game.prototype.horizontalChains = function() {
 Game.prototype.verticalChains = function() {
   var verticalChains = [];
   var potentialChain = [];
-  for(var i = 0; i < this.board.length; i++) {
-    if (i < 2 * this.numColumns) {
-      potentialChain.push(i, i + this.numColumns, i + 2 * this.numColumns)
-      if(this.board[i] === this.board[i + this.numColumns] && 
-        this.board[i] === this.board[i + 2 * this.numColumns]) {
-        verticalChains.push(i, i + this.numColumns, i + 2 * this.numColumns);
-      }
-      else {potentialChain = []};
+  for(var i = 0; i < (this.board.length - 2 * this.numColumns); i++) {
+    potentialChain.push(i, i + this.numColumns, i + 2 * this.numColumns)
+    if(this.board[i] === this.board[i + this.numColumns] && 
+      this.board[i] === this.board[i + 2 * this.numColumns]) {
+      verticalChains.push(i, i + this.numColumns, i + 2 * this.numColumns);
     }
+    else {potentialChain = []};
   }
   return verticalChains.unique();
 };
@@ -118,8 +117,8 @@ Game.prototype.eliminateChains = function() {
   }
   this.renderBoard();
   var thisGame = this;
-  setTimeout(function() {thisGame.dropGems();}, 1000);
-  setTimeout(function() {thisGame.fillBoard();}, 2500);
+  setTimeout(function() {thisGame.dropGems();}, 750);
+  setTimeout(function() {thisGame.fillBoard();}, 1500);
 }
 
 Game.prototype.dropGems = function() {
