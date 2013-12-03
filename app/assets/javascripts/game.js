@@ -1,10 +1,7 @@
 $(document).ready(function() {
-  var game = new Game(4, 4);
+  var game = new Game(5, 5);
   game.createBlankBoard();
   game.fillBoard();
-  if (game.horizontalChains().length > 0 || game.verticalChains().length > 0) {
-    setTimeout(function() {game.eliminateChains();}, 1500);
-  }
 });
 
 var gems = ["X", "O", "V", "#", "&"];
@@ -33,7 +30,15 @@ Game.prototype.fillBoard = function() {
     }
   }
   this.renderBoard();
+  this.checkForChains();
 };
+
+Game.prototype.checkForChains = function() {
+  var thisGame = this;
+  if (this.horizontalChains().length > 0 || this.verticalChains().length > 0) {
+    setTimeout(function() {thisGame.eliminateChains();}, 1500);
+  }
+}
 
 Game.prototype.renderBoard = function() {
   for(var i = 0; i < this.board.length; i++) {
