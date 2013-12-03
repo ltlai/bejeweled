@@ -2,6 +2,9 @@ $(document).ready(function() {
   var game = new Game(5, 5);
   game.createBlankBoard();
   game.fillBoard();
+  $('td').click(function() {
+    game.processClick(this.id);
+  });
 });
 
 var gems = ["X", "O", "V", "#", "&"];
@@ -15,7 +18,27 @@ function Game(numRows, numColumns) {
   this.numRows = numRows;
   this.numColumns = numColumns;
   this.board =  [];
+  this.firstClick = "";
+  this.secondClick = "";
 };
+
+Game.prototype.processClick = function(id) {
+  if (this.firstClick === "") {
+    this.firstClick = parseInt(id);
+  }
+  else {
+    this.secondClick = parseInt(id);
+  }
+  if (this.secondClick) {
+    var firstGem = this.board[this.firstClick];
+    var secondGem = this.board[this.secondClick];
+    this.board[this.firstClick] = secondGem;
+    this.board[this.secondClick] = firstGem;
+    this.firstClick = "";
+    this.secondClick = "";
+  }
+  this.renderBoard();
+}
 
 Game.prototype.createBlankBoard = function() {
   for(var i = 0; i < (this.numRows * this.numColumns); i++) {
@@ -95,8 +118,8 @@ Game.prototype.eliminateChains = function() {
   }
   this.renderBoard();
   var thisGame = this;
-  setTimeout(function() {thisGame.dropGems();}, 1500);
-  setTimeout(function() {thisGame.fillBoard();}, 3000);
+  setTimeout(function() {thisGame.dropGems();}, 1000);
+  setTimeout(function() {thisGame.fillBoard();}, 2500);
 }
 
 Game.prototype.dropGems = function() {
