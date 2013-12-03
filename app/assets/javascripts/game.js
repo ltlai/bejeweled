@@ -30,7 +30,7 @@ Game.prototype.processClick = function(id) {
   else {
     this.secondClick = parseInt(id);
   }
-  if (this.secondClick) {
+  if (this.secondClick !== "") {
     if (this.firstClick === this.secondClick) {
       this.resetClicks();
     }
