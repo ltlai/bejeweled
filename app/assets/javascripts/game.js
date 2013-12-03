@@ -7,7 +7,7 @@ $(document).ready(function() {
   });
 });
 
-var gems = ["X", "O", "V", "#", "&"];
+var gems = ["X", "O", "@", "#", "&"];
 
 function randomGem() {
    var n = Math.floor((Math.random()*(gems.length)));
@@ -30,15 +30,19 @@ Game.prototype.processClick = function(id) {
     this.secondClick = parseInt(id);
   }
   if (this.secondClick) {
-    var firstGem = this.board[this.firstClick];
-    var secondGem = this.board[this.secondClick];
-    this.board[this.firstClick] = secondGem;
-    this.board[this.secondClick] = firstGem;
-    this.firstClick = "";
-    this.secondClick = "";
-    this.renderBoard();
-    this.checkForChains();
+    this.swapGems();
   }
+}
+
+Game.prototype.swapGems = function() {
+  var firstGem = this.board[this.firstClick];
+  var secondGem = this.board[this.secondClick];
+  this.board[this.firstClick] = secondGem;
+  this.board[this.secondClick] = firstGem;
+  this.firstClick = "";
+  this.secondClick = "";
+  this.renderBoard();
+  this.checkForChains();
 }
 
 Game.prototype.createBlankBoard = function() {
@@ -122,8 +126,8 @@ Game.prototype.eliminateChains = function() {
 }
 
 Game.prototype.dropGems = function() {
-  for(var i = this.board.length - 1; i > this.numColumns; i--) {
-    if (this.board[i] === "" && this.gemAbove(i)) {
+  for(var i = this.board.length - 1; i >= this.numColumns; i--) {
+    if (this.board[i] === "" && this.gemAbove(i)[0]) {
       this.board[i] = this.gemAbove(i)[0];
       this.board[this.gemAbove(i)[1]] = ""
     }
@@ -132,12 +136,12 @@ Game.prototype.dropGems = function() {
 }
 
 Game.prototype.gemAbove = function(i) {
-  for(var j = i - this.numColumns; j > -1; j -= this.numColumns) {
+  for(var j = i - this.numColumns; j >= 0; j -= this.numColumns) {
     if (this.board[j] != "") {
-      return [this.board[j], j]
+      return [this.board[j], j] 
     }
   }
-  return false;
+  return [false, -1];
 }
 
 Array.prototype.contains = function(value) {
