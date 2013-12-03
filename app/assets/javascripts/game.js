@@ -91,6 +91,7 @@ Game.prototype.eliminateChains = function() {
   this.renderBoard();
   var thisGame = this;
   setTimeout(function() {thisGame.dropGems();}, 1500);
+  setTimeout(function() {thisGame.fillBoard();}, 3000);
 }
 
 Game.prototype.dropGems = function() {
