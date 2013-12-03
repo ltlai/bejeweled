@@ -25,6 +25,7 @@ function Game(numRows, numColumns) {
 Game.prototype.processClick = function(id) {
   if (this.firstClick === "") {
     this.firstClick = parseInt(id);
+    $('#' + id).addClass('selected');
   }
   else {
     this.secondClick = parseInt(id);
@@ -49,6 +50,7 @@ Game.prototype.processClick = function(id) {
 }
 
 Game.prototype.resetClicks = function() {
+  $('#' + this.firstClick.toString()).removeClass('selected');
   this.firstClick = "";
   this.secondClick = "";
 }
