@@ -20,6 +20,7 @@ function Game(numRows, numColumns) {
   this.board =  [];
   this.firstClick = "";
   this.secondClick = "";
+  this.score = 0;
 };
 
 Game.prototype.createBlankBoard = function() {
@@ -43,13 +44,17 @@ Game.prototype.fillBoard = function() {
     }
   }
   this.renderBoard();
-  this.checkForChains();
+  var thisGame = this;
+  if (this.chainsExist()) {
+    setTimeout(function() {thisGame.eliminateChains();}, 1500);
+  }
 };
 
 Game.prototype.renderBoard = function() {
   for(var i = 0; i < this.board.length; i++) {
     $('#' + i.toString()).text(this.board[i]);
   }
+  $('#score').text(this.score);
 };
 
 Game.prototype.processClick = function(id) {
@@ -66,7 +71,7 @@ Game.prototype.processClick = function(id) {
     }
     else if (this.adjacent(this.firstClick, this.secondClick)) {
       this.swapGems();
-      if (this.checkForChains()) {
+      if (this.chainsExist()) {
         this.finishSwap();
       }
       else {
@@ -116,10 +121,13 @@ Game.prototype.swapGems = function() {
 Game.prototype.finishSwap = function() {
   this.resetClicks();
   this.renderBoard();
-  this.checkForChains();
+  var thisGame = this;
+  if (this.chainsExist()) {
+    setTimeout(function() {thisGame.eliminateChains();}, 1500);
+  }
 }
 
-Game.prototype.checkForChains = function() {
+Game.prototype.chainsExist = function() {
   var thisGame = this;
   if (this.horizontalChains().length > 0 || this.verticalChains().length > 0) {
     var horChains = this.horizontalChains();
@@ -130,19 +138,48 @@ Game.prototype.checkForChains = function() {
     for(var i = 0; i < vertChains.length; i++) {
       $('#' + vertChains[i].toString()).addClass('chain');
     }
-    // this.renderBoard();
-    setTimeout(function() {thisGame.eliminateChains();}, 1500);
     return true;
   }
   return false;
 }
 
-Game.prototype.lastTwoColumns = function(i) {
-  if((i + 1) % this.numColumns === 0 || (i + 2) % this.numColumns === 0) {
-    return true;
+Game.prototype.eliminateChains = function() {
+  var horChains = this.horizontalChains();
+  var vertChains = this.verticalChains();
+  for(var i = 0; i < horChains.length; i++) {
+    $('#' + horChains[i].toString()).removeClass('chain')
+    this.board[horChains[i]] = ""
+    this.score += 1;
   }
-  return false;
-};
+  for(var i = 0; i < vertChains.length; i++) {
+    $('#' + vertChains[i].toString()).removeClass('chain')
+    this.board[vertChains[i]] = ""
+    this.score += 1;
+  }
+  this.renderBoard();
+  var thisGame = this;
+  setTimeout(function() {thisGame.dropGems();}, 500);
+  setTimeout(function() {thisGame.fillBoard();}, 1000);
+}
+
+Game.prototype.dropGems = function() {
+  for(var i = this.board.length - 1; i >= this.numColumns; i--) {
+    if (this.board[i] === "" && this.gemAbove(i)[0]) {
+      this.board[i] = this.gemAbove(i)[0];
+      this.board[this.gemAbove(i)[1]] = ""
+    }
+  }
+  this.renderBoard();
+}
+
+Game.prototype.gemAbove = function(i) {
+  for(var j = i - this.numColumns; j >= 0; j -= this.numColumns) {
+    if (this.board[j] != "") {
+      return [this.board[j], j] 
+    }
+  }
+  return [false, -1];
+}
 
 Game.prototype.horizontalChains = function() {
   var horizontalChains = [];
@@ -173,41 +210,12 @@ Game.prototype.verticalChains = function() {
   return verticalChains.unique();
 };
 
-Game.prototype.eliminateChains = function() {
-  var horChains = this.horizontalChains();
-  var vertChains = this.verticalChains();
-  for(var i = 0; i < horChains.length; i++) {
-    $('#' + horChains[i].toString()).removeClass('chain')
-    this.board[horChains[i]] = ""
+Game.prototype.lastTwoColumns = function(i) {
+  if((i + 1) % this.numColumns === 0 || (i + 2) % this.numColumns === 0) {
+    return true;
   }
-  for(var i = 0; i < vertChains.length; i++) {
-    $('#' + vertChains[i].toString()).removeClass('chain')
-    this.board[vertChains[i]] = ""
-  }
-  this.renderBoard();
-  var thisGame = this;
-  setTimeout(function() {thisGame.dropGems();}, 500);
-  setTimeout(function() {thisGame.fillBoard();}, 1000);
-}
-
-Game.prototype.dropGems = function() {
-  for(var i = this.board.length - 1; i >= this.numColumns; i--) {
-    if (this.board[i] === "" && this.gemAbove(i)[0]) {
-      this.board[i] = this.gemAbove(i)[0];
-      this.board[this.gemAbove(i)[1]] = ""
-    }
-  }
-  this.renderBoard();
-}
-
-Game.prototype.gemAbove = function(i) {
-  for(var j = i - this.numColumns; j >= 0; j -= this.numColumns) {
-    if (this.board[j] != "") {
-      return [this.board[j], j] 
-    }
-  }
-  return [false, -1];
-}
+  return false;
+};
 
 Array.prototype.contains = function(value) {
   for(var i = 0; i < this.length; i++) {
