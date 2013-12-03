@@ -22,6 +22,36 @@ function Game(numRows, numColumns) {
   this.secondClick = "";
 };
 
+Game.prototype.createBlankBoard = function() {
+  for(var i = 0; i < (this.numRows * this.numColumns); i++) {
+    this.board.push("");
+  }
+  var cellId = 0;
+  for(var i = 0; i < this.numRows; i++) {
+    $('table').append("<tr id='row_" + i + "'></tr>");
+    for(var j = 0; j < this.numColumns; j++) {
+      $('#row_' + i).append("<td id='" + cellId + "'></td>");
+      cellId += 1;
+    };
+  };
+};
+
+Game.prototype.fillBoard = function() {
+  for(var i = 0; i < this.board.length; i++) {
+    if(this.board[i] === "") {
+      this.board[i] = randomGem();
+    }
+  }
+  this.renderBoard();
+  this.checkForChains();
+};
+
+Game.prototype.renderBoard = function() {
+  for(var i = 0; i < this.board.length; i++) {
+    $('#' + i.toString()).text(this.board[i]);
+  }
+};
+
 Game.prototype.processClick = function(id) {
   if (this.firstClick === "") {
     this.firstClick = parseInt(id);
@@ -89,22 +119,6 @@ Game.prototype.finishSwap = function() {
   this.checkForChains();
 }
 
-Game.prototype.createBlankBoard = function() {
-  for(var i = 0; i < (this.numRows * this.numColumns); i++) {
-    this.board.push("");
-  }
-};
-
-Game.prototype.fillBoard = function() {
-  for(var i = 0; i < this.board.length; i++) {
-    if(this.board[i] === "") {
-      this.board[i] = randomGem();
-    }
-  }
-  this.renderBoard();
-  this.checkForChains();
-};
-
 Game.prototype.checkForChains = function() {
   var thisGame = this;
   if (this.horizontalChains().length > 0 || this.verticalChains().length > 0) {
@@ -122,12 +136,6 @@ Game.prototype.checkForChains = function() {
   }
   return false;
 }
-
-Game.prototype.renderBoard = function() {
-  for(var i = 0; i < this.board.length; i++) {
-    $('#' + i.toString()).text(this.board[i]);
-  }
-};
 
 Game.prototype.lastTwoColumns = function(i) {
   if((i + 1) % this.numColumns === 0 || (i + 2) % this.numColumns === 0) {
