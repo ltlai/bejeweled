@@ -31,7 +31,10 @@ Game.prototype.processClick = function(id) {
     this.secondClick = parseInt(id);
   }
   if (this.secondClick) {
-    if (this.adjacent(this.firstClick, this.secondClick)) {
+    if (this.firstClick === this.secondClick) {
+      this.resetClicks();
+    }
+    else if (this.adjacent(this.firstClick, this.secondClick)) {
       this.swapGems();
       if (this.checkForChains()) {
         this.finishSwap();
