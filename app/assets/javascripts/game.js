@@ -1,10 +1,12 @@
 $(document).ready(function() {
-  var game = new Game(5, 5);
-  game.createBlankBoard();
-  game.fillBoard();
-  $('td').click(function() {
-    game.processClick(this.id);
-  });
+  if (window.location.pathname == '/') {
+    var game = new Game(3, 3);
+    game.createBlankBoard();
+    game.fillBoard();
+    $('.gem').click(function() {
+      game.processClick(this.id);
+    });
+  }
 });
 
 var gems = ["X", "O", "@", "#", "&"];
