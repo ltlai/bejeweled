@@ -1,14 +1,11 @@
 $(document).ready(function() {
-  if ($("#refresh").val() == 'yes') {
-    location.reload; 
-  } 
-  else { 
-    $('#refresh').val('yes');
-  }
   if (window.location.pathname == '/') {
     var game = new Game(3, 3);
     game.createBlankBoard();
     game.fillBoard();
+    $('#new-game').click(function() {
+      location.reload();
+    })
     $('.gem').click(function() {
       game.processClick(this.id);
     });
