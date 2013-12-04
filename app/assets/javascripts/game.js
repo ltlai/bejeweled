@@ -1,4 +1,10 @@
 $(document).ready(function() {
+  if ($("#refresh").val() == 'yes') {
+    location.reload; 
+  } 
+  else { 
+    $('#refresh').val('yes');
+  }
   if (window.location.pathname == '/') {
     var game = new Game(3, 3);
     game.createBlankBoard();
