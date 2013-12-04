@@ -1,6 +1,6 @@
 class HighScoresController < ApplicationController
   def index
-    @high_scores = HighScore.all
+    @high_scores = HighScore.all.sort { |x, y| x.score <=> y.score }.reverse
   end
 
   def create
