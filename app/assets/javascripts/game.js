@@ -52,7 +52,7 @@ Game.prototype.fillBoard = function() {
   this.destroyAnyChains();
   if (this.gameOver()) {
     var name = window.prompt('Game over! There are no more valid moves. Please enter your name to save your score to the high scores table:')
-    if (name === null) {
+    if (name === null || name === "") {
       name = 'Anonymous';
     }
     var data = {name: name, score: this.score}
