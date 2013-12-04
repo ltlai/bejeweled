@@ -46,7 +46,16 @@ Game.prototype.fillBoard = function() {
   this.renderBoard();
   this.destroyAnyChains();
   if (this.gameOver()) {
-    alert('No more valid moves - game over!')
+    var name = window.prompt('Game over! There are no more valid moves. Please enter your name to save your score to the high scores table:')
+    if (name === null) {
+      name = 'Anonymous';
+    }
+    var data = {name: name, score: this.score}
+    $.ajax({
+      type: "POST",
+      url: "/high_scores",
+      data: data
+    });
   }
 };
 
