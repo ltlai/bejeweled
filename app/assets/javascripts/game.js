@@ -1,6 +1,6 @@
 $(document).ready(function() {
   if (window.location.pathname == '/') {
-    var game = new Game(3, 3);
+    var game = new Game(12, 8);
     game.createBlankBoard();
     game.fillBoard();
     $('#new-game').click(function() {
@@ -9,6 +9,9 @@ $(document).ready(function() {
     $('.gem').click(function() {
       game.processClick(this.id);
     });
+    $('#hint').click(function() {
+      game.giveHint();
+    })
   }
 });
 
@@ -50,7 +53,7 @@ Game.prototype.fillBoard = function() {
   }
   this.renderBoard();
   this.destroyAnyChains();
-  if (this.gameOver()) {
+  if (this.gameOver()[0] === true) {
     var name = window.prompt('Game over! There are no more valid moves. Please enter your name to save your score to the high scores table:')
     if (name === null || name === "") {
       name = 'Anonymous';
@@ -146,26 +149,6 @@ Game.prototype.finishSwap = function() {
   this.destroyAnyChains();
 }
 
-Game.prototype.gameOver = function() {
-  for(var i = 0; i < this.board.length; i++) {
-    var adjacentTiles = [];
-    for(var j = 0; j < this.board.length; j++) {
-      if (this.adjacent(i, j)) {
-        adjacentTiles.push(j);
-      }
-    }
-    for(var k = 0; k < adjacentTiles.length; k++) {
-      this.swapTiles(i, adjacentTiles[k]);
-      if (this.chains()) {
-        this.swapTiles(i, adjacentTiles[k]);
-        return false;
-      }
-      this.swapTiles(i, adjacentTiles[k]);
-    }
-  }
-  return true;
-}
-
 Game.prototype.highlightChains = function() {
   var chains = this.chains();
   for(var i = 0; i < chains.length; i++) {
@@ -229,6 +212,33 @@ Game.prototype.chains = function() {
     return 0;
   }
 };
+
+Game.prototype.gameOver = function() {
+  for(var i = 0; i < this.board.length; i++) {
+    var adjacentTiles = [];
+    for(var j = 0; j < this.board.length; j++) {
+      if (this.adjacent(i, j)) {
+        adjacentTiles.push(j);
+      }
+    }
+    for(var k = 0; k < adjacentTiles.length; k++) {
+      this.swapTiles(i, adjacentTiles[k]);
+      if (this.chains()) {
+        this.swapTiles(i, adjacentTiles[k]);
+        return [false, i];
+      }
+      this.swapTiles(i, adjacentTiles[k]);
+    }
+  }
+  return [true, -1];
+}
+
+Game.prototype.giveHint = function() {
+  $('#' + this.gameOver()[1]).addClass('selected');
+  var thisGame = this;
+  setTimeout(function() {
+    $('#' + thisGame.gameOver()[1]).removeClass('selected')}, 250);
+}
 
 Game.prototype.lastTwoColumns = function(i) {
   return (i + 1) % this.numColumns === 0 || (i + 2) % this.numColumns === 0
