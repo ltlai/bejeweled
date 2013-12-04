@@ -143,7 +143,6 @@ Game.prototype.gameOver = function() {
     for(var k = 0; k < adjacentTiles.length; k++) {
       this.swapGems(i, adjacentTiles[k]);
       if (this.chainsExist()) {
-        console.log('chains exist: ', this.horizontalChains(), this.verticalChains());
         this.swapGems(i, adjacentTiles[k]);
         return false;
       }
