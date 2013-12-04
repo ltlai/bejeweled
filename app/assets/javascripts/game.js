@@ -128,7 +128,7 @@ Game.prototype.finishSwap = function() {
   var thisGame = this;
   if (this.chainsExist()) {
     this.highlightChains();
-    setTimeout(function() {thisGame.eliminateChains();}, 1500);
+    setTimeout(function() {thisGame.eliminateChains();}, 500);
   }
 }
 
@@ -143,6 +143,7 @@ Game.prototype.gameOver = function() {
     for(var k = 0; k < adjacentTiles.length; k++) {
       this.swapGems(i, adjacentTiles[k]);
       if (this.chainsExist()) {
+        console.log(this.horizontalChains(), this.verticalChains());
         this.swapGems(i, adjacentTiles[k]);
         return false;
       }
