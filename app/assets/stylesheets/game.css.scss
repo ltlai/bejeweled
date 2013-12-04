@@ -1,4 +1,18 @@
-td {
+table {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+th {
+  border: 1px solid black;
+}
+
+.high-scores td{
+  border: 1px solid black;
+  text-align: center;
+}
+
+td.gem {
   border: 1px solid black;
   height: 32px;
   width: 32px;

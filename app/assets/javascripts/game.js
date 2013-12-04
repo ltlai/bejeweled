@@ -31,7 +31,7 @@ Game.prototype.createBlankBoard = function() {
   for(var i = 0; i < this.numRows; i++) {
     $('#game-board').append("<tr id='row_" + i + "'></tr>");
     for(var j = 0; j < this.numColumns; j++) {
-      $('#row_' + i).append("<td id='" + cellId + "'></td>");
+      $('#row_' + i).append("<td class='gem' id='" + cellId + "'></td>");
       cellId += 1;
     };
   };

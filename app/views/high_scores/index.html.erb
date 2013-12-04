@@ -1,0 +1,17 @@
+<h1>High Scores</h1>
+
+<table class='high-scores'>
+  <tr>
+    <th>Name</th>
+    <th>Score</th>
+  </tr>
+  <% @high_scores.each do |hs| %>
+    <tr>
+      <td><%= hs.name %></td>
+      <td><%= hs.score %></td>
+    </tr>
+  <% end %>
+</table>
+
+<br>
+<%= link_to 'Back to game', root_path %>
