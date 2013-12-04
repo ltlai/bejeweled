@@ -46,7 +46,11 @@ Game.prototype.fillBoard = function() {
   this.renderBoard();
   var thisGame = this;
   if (this.chainsExist()) {
-    setTimeout(function() {thisGame.eliminateChains();}, 1500);
+    this.highlightChains();
+    setTimeout(function() {thisGame.eliminateChains();}, 500);
+  }
+  if (this.gameOver()) {
+    alert('No more valid moves - game over!')
   }
 };
 
@@ -70,12 +74,12 @@ Game.prototype.processClick = function(id) {
       this.resetClicks();
     }
     else if (this.adjacent(this.firstClick, this.secondClick)) {
-      this.swapGems();
+      this.swapGems(this.firstClick, this.secondClick);
       if (this.chainsExist()) {
         this.finishSwap();
       }
       else {
-        this.swapGems();
+        this.swapGems(this.firstClick, this.secondClick);
         this.resetClicks();
         alert("Sorry, that move does not create any chains");
       }
@@ -111,11 +115,11 @@ Game.prototype.adjacent = function(tile1, tile2) {
   return false;
 }
 
-Game.prototype.swapGems = function() {
-  var firstGem = this.board[this.firstClick];
-  var secondGem = this.board[this.secondClick];
-  this.board[this.firstClick] = secondGem;
-  this.board[this.secondClick] = firstGem;
+Game.prototype.swapGems = function(tile1, tile2) {
+  var firstGem = this.board[tile1];
+  var secondGem = this.board[tile2];
+  this.board[tile1] = secondGem;
+  this.board[tile2] = firstGem;
 }
 
 Game.prototype.finishSwap = function() {
@@ -123,24 +127,48 @@ Game.prototype.finishSwap = function() {
   this.renderBoard();
   var thisGame = this;
   if (this.chainsExist()) {
+    this.highlightChains();
     setTimeout(function() {thisGame.eliminateChains();}, 1500);
   }
 }
 
+Game.prototype.gameOver = function() {
+  for(var i = 0; i < this.board.length; i++) {
+    var adjacentTiles = [];
+    for(var j = 0; j < this.board.length; j++) {
+      if (this.adjacent(i, j)) {
+        adjacentTiles.push(j);
+      }
+    }
+    for(var k = 0; k < adjacentTiles.length; k++) {
+      this.swapGems(i, adjacentTiles[k]);
+      if (this.chainsExist()) {
+        console.log('chains exist: ', this.horizontalChains(), this.verticalChains());
+        this.swapGems(i, adjacentTiles[k]);
+        return false;
+      }
+      this.swapGems(i, adjacentTiles[k]);
+    }
+  }
+  return true;
+}
+
 Game.prototype.chainsExist = function() {
-  var thisGame = this;
   if (this.horizontalChains().length > 0 || this.verticalChains().length > 0) {
-    var horChains = this.horizontalChains();
-    var vertChains = this.verticalChains();
-    for(var i = 0; i < horChains.length; i++) {
-      $('#' + horChains[i].toString()).addClass('chain');
-    }
-    for(var i = 0; i < vertChains.length; i++) {
-      $('#' + vertChains[i].toString()).addClass('chain');
-    }
     return true;
   }
   return false;
+}
+
+Game.prototype.highlightChains = function() {
+  var horChains = this.horizontalChains();
+  var vertChains = this.verticalChains();
+  for(var i = 0; i < horChains.length; i++) {
+    $('#' + horChains[i].toString()).addClass('chain');
+  }
+  for(var i = 0; i < vertChains.length; i++) {
+    $('#' + vertChains[i].toString()).addClass('chain');
+  }
 }
 
 Game.prototype.eliminateChains = function() {
@@ -159,17 +187,18 @@ Game.prototype.eliminateChains = function() {
   this.renderBoard();
   var thisGame = this;
   setTimeout(function() {thisGame.dropGems();}, 500);
-  setTimeout(function() {thisGame.fillBoard();}, 1000);
 }
 
 Game.prototype.dropGems = function() {
   for(var i = this.board.length - 1; i >= this.numColumns; i--) {
     if (this.board[i] === "" && this.gemAbove(i)[0]) {
       this.board[i] = this.gemAbove(i)[0];
-      this.board[this.gemAbove(i)[1]] = ""
+      this.board[(this.gemAbove(i)[1])] = ""
     }
   }
   this.renderBoard();
+  var thisGame = this;
+  setTimeout(function() {thisGame.fillBoard();}, 500);
 }
 
 Game.prototype.gemAbove = function(i) {
