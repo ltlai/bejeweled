@@ -1,6 +1,6 @@
 class HighScoresController < ApplicationController
   def index
-    @high_scores = HighScore.all(order: 'score DESC', limit: 10)
+    @high_scores = HighScore.all(order: 'score DESC', limit: 20)
   end
 
   def create
