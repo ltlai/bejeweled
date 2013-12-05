@@ -1,6 +1,6 @@
 $(document).ready(function() {
   if (window.location.pathname == '/') {
-    var game = new Game(4, 4);
+    var game = new Game(8, 5);
     game.createBlankBoard();
     game.fillBoard();
     $('#new-game').click(function() {
