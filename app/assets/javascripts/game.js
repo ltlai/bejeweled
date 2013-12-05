@@ -3,12 +3,12 @@ $(document).ready(function() {
     var game = new Game(5, 5);
     game.createBlankBoard();
     game.fillBoard();
-    $('#new-game').click(function() {
-      location.reload();
-    })
     $('.gem').click(function() {
       game.processClick(this.id);
     });
+    $('#new-game').click(function() {
+      location.reload();
+    })
     $('#hint').click(function() {
       game.giveHint();
     })
