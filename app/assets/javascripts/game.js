@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
   if (window.location.pathname == '/') {
     var game = new Game(5, 5);
     game.createBlankBoard();
