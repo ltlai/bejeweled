@@ -53,6 +53,7 @@ Game.prototype.fillBoard = function() {
   }
   this.renderBoard();
   this.destroyAnyChains();
+  $('.overlay').hide();
   if (this.gameOver()[0] === true) {
     var name = window.prompt('Game over! There are no more valid moves. Please enter your name to save your score to the high scores table:')
     if (name === null || name === "") {
@@ -96,12 +97,14 @@ Game.prototype.processClick = function(id) {
     }
     else if (this.adjacent(this.firstClick, this.secondClick)) {
       this.swapTiles(this.firstClick, this.secondClick);
+      $('.overlay').show();
       if (this.chains().length > 0) {
         this.finishSwap();
       }
       else {
         this.swapTiles(this.firstClick, this.secondClick);
         this.resetClicks();
+        $('.overlay').hide();
         alert("Sorry, that move does not create any chains");
       }
     }
