@@ -76,7 +76,7 @@ Game.prototype.renderBoard = function() {
 
 Game.prototype.destroyAnyChains = function() {
   var thisGame = this;
-  if (this.chains()) {
+  if (this.chains().length > 0) {
     this.highlightChains();
     setTimeout(function() {thisGame.eliminateChains();}, 500);
   }
@@ -96,7 +96,7 @@ Game.prototype.processClick = function(id) {
     }
     else if (this.adjacent(this.firstClick, this.secondClick)) {
       this.swapTiles(this.firstClick, this.secondClick);
-      if (this.chains()) {
+      if (this.chains().length > 0) {
         this.finishSwap();
       }
       else {
@@ -205,12 +205,7 @@ Game.prototype.chains = function() {
       chains.push(i, i + this.numColumns, i + 2 * this.numColumns);
     }
   }
-  if (chains.length > 0) {
-    return chains.unique();
-  }
-  else {
-    return 0;
-  }
+  return chains.unique();
 };
 
 Game.prototype.gameOver = function() {
@@ -223,7 +218,7 @@ Game.prototype.gameOver = function() {
     }
     for(var k = 0; k < adjacentTiles.length; k++) {
       this.swapTiles(i, adjacentTiles[k]);
-      if (this.chains()) {
+      if (this.chains().length > 0) {
         this.swapTiles(i, adjacentTiles[k]);
         return [false, i];
       }
